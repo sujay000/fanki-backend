@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "dayjs": "^1.11.13"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0"
+  }
+}
