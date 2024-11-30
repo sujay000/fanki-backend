@@ -1,0 +1,57 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id           Int      @id @default(autoincrement())
+    username     String
+    email        String   @unique
+    passwordHash String
+    createdAt    DateTime @default(now())
+    lastLogin    DateTime
+    decks        Deck[]
+
+    @@index([email])
+}
+
+model Deck {
+    id        Int      @id @default(autoincrement())
+    userId    Int
+    user      User     @relation(fields: [userId], references: [id])
+    name      String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    cards     Card[]
+}
+
+model Card {
+    id           Int      @id @default(autoincrement())
+    deckId       Int
+    front        String
+    back         String
+    frontImage   String   @default("")
+    backImage    String   @default("")
+    createdAt    DateTime @default(now())
+    updatedAt    DateTime @updatedAt
+    lastReviewed DateTime
+    nextReview   DateTime
+    deck         Deck     @relation(fields: [deckId], references: [id])
+    tags         Tag[]
+}
+
+model Tag {
+    id    Int    @id @default(autoincrement())
+    name  String @unique
+    cards Card[]
+}
